@@ -1,0 +1,29 @@
+#!/bin/bash
+set -Eeuo pipefail
+trap 'echo >&2 "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+
+# shellcheck source=sv-tool-prompts.sh
+source "$(dirname "${BASH_SOURCE[0]}")/sv-tool-prompts.sh"
+
+NPM_PREFIX="${HOME}/node_modules"
+NPM_BIN="$NPM_PREFIX/bin"
+if [[ ! -x "$NPM_BIN/pi" ]]; then
+    echo >&2 "Installing pi with npm..."
+    npm install --prefix "$NPM_PREFIX" -g @earendil-works/pi-coding-agent
+fi
+PI="$NPM_BIN/pi"
+
+if [[ ! -x "$PI" ]]; then
+    echo >&2 "ERROR: pi is not installed"
+    echo >&2 "Install with: npm install -g @earendil-works/pi-coding-agent"
+    exit 1
+fi
+
+TOOL_PROMPT=$(sv_tool_prompt)
+EXTRA_ARGS=()
+if [[ -n "$TOOL_PROMPT" ]]; then
+    EXTRA_ARGS+=(--append-system-prompt "$TOOL_PROMPT")
+fi
+
+echo >&2 "$USER: running pi"
+exec "$PI" ${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"} "$@"

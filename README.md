@@ -6,7 +6,7 @@ SandVault (`sv`) manages a limited user account to sandbox shell commands and AI
 </br>
 </br>
 
-- **AI ready** - Includes Claude Code, OpenAI Codex, OpenCode, Google Gemini
+- **AI ready** - Includes Claude Code, OpenAI Codex, OpenCode, Pi, Google Gemini
 - **Web and iOS automation** - sandbox access to Chrome / Lightpanda and iOS Simulator
 - **Fast context switching** - No VM overhead; instant user switching
 - **Passwordless** - switch accounts without a prompt (after setup)
@@ -85,6 +85,9 @@ Install via git:
 # Run OpenCode in the sandbox
 # shortcut: sv o
   sv opencode
+
+# Run Pi in the sandbox
+  sv pi
 
 # Run Google Gemini in the sandbox
 # shortcut: sv g
@@ -167,6 +170,8 @@ By default, SandVault installs AI tools via Homebrew on the host side. With `--n
 - **Gemini** — installed via `npm install -g @google/gemini-cli`
 
 Tools are installed on first run and reused on subsequent runs.
+
+**Pi** requires a separate install (`npm install -g @earendil-works/pi-coding-agent`) since there is no Homebrew formula maintained by the Pi team. Once installed, `sv pi` works with or without `--native-install`.
 
 ```bash
 # Install and run Claude Code natively
@@ -506,6 +511,7 @@ After exploring Docker containers, Podman, sandbox-exec, and virtualization, I n
 - Runs Claude Code with `--dangerously-skip-permissions`
 - Runs OpenAI Codex with `--dangerously-bypass-approvals-and-sandbox`
 - Runs OpenCode with `OPENCODE_PERMISSION='{"*":"allow"}'`
+- Runs Pi (no built-in permissions system)
 - Runs Google Gemini with `--yolo`
 - Automates Chrome for web testing (via Chrome DevTools Protocol)
 - Automated iOS Simulator for app testing (via `xcrun simctl`, and `iosef`)

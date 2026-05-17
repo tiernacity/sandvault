@@ -356,6 +356,28 @@ run_tests() {
     }
     queue_test test_opencode_wrapper_uses_skip_permissions
 
+    test_help_lists_pi() {
+        local output
+        output=$(sv_cmd --help 2>&1)
+        if [[ "$output" == *"pi"* ]]; then
+            pass "--help lists pi"
+        else
+            fail "--help lists pi" "pi command" "$output"
+        fi
+    }
+    queue_test test_help_lists_pi
+
+    test_pi_wrapper_exists() {
+        if [[ -x "$SCRIPT_DIR/../guest/home/bin/pi" ]]; then
+            pass "pi wrapper exists and is executable"
+        else
+            fail "pi wrapper exists and is executable" \
+                "executable wrapper" \
+                "$SCRIPT_DIR/../guest/home/bin/pi"
+        fi
+    }
+    queue_test test_pi_wrapper_exists
+
     # Unknown option
     test_unknown_option() {
         local output
@@ -443,7 +465,7 @@ run_tests() {
         fi
         local failed=false
         local link
-        for link in claude codex opencode gemini; do
+        for link in claude codex opencode pi gemini; do
             if [[ -L "$brew_prefix/bin/$link" ]]; then
                 local link_perms
                 link_perms=$(/usr/bin/stat -f "%Lp" "$brew_prefix/bin/$link")

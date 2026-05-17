@@ -391,14 +391,14 @@ install_lightpanda() {
 install_deps () {
     if [[ "$NATIVE_INSTALL" == "true" ]]; then
         # Native install is handled inside the sandbox by guest/home/bin/* scripts;
-        # ensure node is available for npm-based tools (codex, gemini).
+        # ensure node is available for npm-based tools (codex, gemini, pi).
         case "${COMMAND:-}" in
             codex)
                 if [[ ! -x "$SHARED_WORKSPACE/user/.local/bin/codex" && ! -x "$SHARED_WORKSPACE/user/bin/codex" ]]; then
                     ensure_brew_tool "node" "node"
                 fi
                 ;;
-            gemini)
+            gemini|pi)
                 ensure_brew_tool "node" "node"
                 ;;
             *)
@@ -418,6 +418,10 @@ install_deps () {
                 ;;
             opencode)
                 ensure_brew_tool "anomalyco/tap/opencode" "opencode"
+                ;;
+            pi)
+                # Pi is npm-only (no Homebrew formula); just ensure node is available.
+                ensure_brew_tool "node" "node"
                 ;;
             gemini)
                 ensure_brew_tool "gemini-cli" "gemini"
@@ -938,12 +942,13 @@ show_help() {
     echo "  cl, claude [PATH]    Open Claude Code in sandvault"
     echo "  co, codex  [PATH]    Open OpenAI Codex in sandvault"
     echo "  o,  opencode [PATH]  Open OpenCode in sandvault"
+    echo "  pi, pi     [PATH]    Open Pi in sandvault"
     echo "  g,  gemini [PATH]    Open Google Gemini in sandvault"
     echo "  s, shell   [PATH]    Open shell in sandvault"
     echo "  b, build             Build sandvault"
     echo "  u, uninstall         Remove sandvault; keep shared files"
     echo ""
-    echo "Arguments after -- are passed to the command (claude, codex, opencode, gemini, shell)"
+    echo "Arguments after -- are passed to the command (claude, codex, opencode, pi, gemini, shell)"
     echo ""
     echo "Environment:"
     echo "  SANDVAULT_ARGS       Default arguments (prepended to command line)"
@@ -1065,6 +1070,10 @@ case "${1:-}" in
         ;;
     o|opencode)
         COMMAND=opencode
+        INITIAL_DIR="${2:-}"
+        ;;
+    pi)
+        COMMAND=pi
         INITIAL_DIR="${2:-}"
         ;;
     g|gemini)
